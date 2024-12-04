@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #6F8FAF;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.mtuci.antivirus.Controllers.LoginWindowController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #6F8FAF;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.mtuci.antivirus.controllers.LoginWindowController">
     <children>
         <AnchorPane fx:id="RegistrationPane" layoutX="338.0" layoutY="216.0" maxHeight="300.0" maxWidth="524.0" prefHeight="269.0" prefWidth="524.0" style="-fx-background-color: #DCDCDC; -fx-background-radius: 20;">
             <children>
