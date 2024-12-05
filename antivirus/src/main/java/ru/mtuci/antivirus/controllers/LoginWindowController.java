@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import ru.mtuci.antivirus.animations.*;
 import ru.mtuci.antivirus.utils.ErrorHandler;
+import ru.mtuci.antivirus.utils.PipeHandler;
 
 public class LoginWindowController {
 
@@ -43,7 +44,7 @@ public class LoginWindowController {
     private PasswordField passwordField2; // Регистрация - пароль
 
     @FXML
-    private PasswordField passwordField3; // Регистрация - пароль2
+    private PasswordField emailField; // Регистрация - пароль2
 
     @FXML
     private Button registerButton; // Кнопка регистрации
@@ -73,7 +74,7 @@ public class LoginWindowController {
         assert loginField2 != null : "fx:id=\"loginField2\" was not injected: check your FXML file 'LoginWindow.fxml'.";
         assert passwordField1 != null : "fx:id=\"passwordField1\" was not injected: check your FXML file 'LoginWindow.fxml'.";
         assert passwordField2 != null : "fx:id=\"passwordField2\" was not injected: check your FXML file 'LoginWindow.fxml'.";
-        assert passwordField3 != null : "fx:id=\"passwordField3\" was not injected: check your FXML file 'LoginWindow.fxml'.";
+        assert emailField != null : "fx:id=\"passwordField3\" was not injected: check your FXML file 'LoginWindow.fxml'.";
         assert registerButton != null : "fx:id=\"registerButton\" was not injected: check your FXML file 'LoginWindow.fxml'.";
         assert switchRegistrationButton != null : "fx:id=\"switchRegistrationButton\" was not injected: check your FXML file 'LoginWindow.fxml'.";
 
@@ -91,7 +92,7 @@ public class LoginWindowController {
         loginField2.setText("");
         passwordField1.setText("");
         passwordField2.setText("");
-        passwordField3.setText("");
+        emailField.setText("");
     }
 
     private void onSwitchToRegistration() {
@@ -113,10 +114,14 @@ public class LoginWindowController {
     public void onRegisterButtonClick(){
         String login = loginField2.getText();
         String password = passwordField2.getText();
-        String repeatPassword = passwordField3.getText();
+        String email = emailField.getText();
         System.out.println("Логин: " + login);
         System.out.println("Пароль: " + password);
-        System.out.println("Повтор пароля: " + repeatPassword);
+        System.out.println("Почта: " + email);
+
+        PipeHandler pipeHandler = new PipeHandler();
+        String response = pipeHandler.sendRegistrationData(login, password, email);
+        System.out.println("Response: " + response);
     }
 
     public void PlayShakeAnimation(){
