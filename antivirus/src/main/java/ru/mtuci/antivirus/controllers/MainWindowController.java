@@ -7,6 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import ru.mtuci.antivirus.MainApplication;
+import ru.mtuci.antivirus.animations.AnimationButtonsPane;
 
 public class MainWindowController {
 
@@ -45,18 +47,20 @@ public class MainWindowController {
 
     @FXML
     void hideButtonsPane(MouseEvent event) {
-
+        AnimationButtonsPane.moveRight(buttonsPane);
     }
 
     @FXML
     void showButtonsPane(MouseEvent event) {
-
+        AnimationButtonsPane.moveLeft(buttonsPane);
     }
 
     @FXML
     void initialize() {
 
         initSettings();
+
+        exitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onExitButtonClicked());
 
         assert buttonsPane != null : "fx:id=\"buttonsPane\" was not injected: check your FXML file 'main-window.fxml'.";
         assert exitButton != null : "fx:id=\"exitButton\" was not injected: check your FXML file 'main-window.fxml'.";
@@ -78,6 +82,11 @@ public class MainWindowController {
     private void hideAllPanes(){
         mainPane.setVisible(false);
         profilePane.setVisible(false);
+    }
+
+    private void onExitButtonClicked() {
+
+        MainApplication.switchScene("templates/login-window.fxml");
     }
 
 }

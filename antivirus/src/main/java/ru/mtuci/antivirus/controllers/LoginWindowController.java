@@ -1,4 +1,5 @@
 package ru.mtuci.antivirus.controllers;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -7,8 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import ru.mtuci.antivirus.MainApplication;
 import ru.mtuci.antivirus.animations.*;
-import ru.mtuci.antivirus.utils.ErrorHandler;
+import ru.mtuci.antivirus.utils.MessageHandler;
 import ru.mtuci.antivirus.utils.PipeHandler;
 
 public class LoginWindowController {
@@ -44,7 +46,7 @@ public class LoginWindowController {
     private PasswordField passwordField2; // Регистрация - пароль
 
     @FXML
-    private PasswordField emailField; // Регистрация - пароль2
+    private TextField emailField; // Регистрация - пароль2
 
     @FXML
     private Button registerButton; // Кнопка регистрации
@@ -58,13 +60,24 @@ public class LoginWindowController {
     void initialize() {
 
 
-
         initSettings();
 
-        switchRegistrationButton.setOnAction(event -> { onSwitchToRegistration(); clearText(); });
-        backButton.setOnAction(event -> { onSwitchToLogin(); clearText(); });
-        loginButton.setOnAction(event ->  { onLoginButtonClick(); clearText(); });
-        registerButton.setOnAction(event ->  { onRegisterButtonClick(); clearText(); });
+        switchRegistrationButton.setOnAction(event -> {
+            onSwitchToRegistration();
+            clearText();
+        });
+        backButton.setOnAction(event -> {
+            onSwitchToLogin();
+            clearText();
+        });
+        loginButton.setOnAction(event -> {
+            onLoginButtonClick();
+            clearText();
+        });
+        registerButton.setOnAction(event -> {
+            onRegisterButtonClick();
+            clearText();
+        });
 
         assert LoginPane != null : "fx:id=\"LoginPane\" was not injected: check your FXML file 'LoginWindow.fxml'.";
         assert RegistrationPane != null : "fx:id=\"RegistrationPane\" was not injected: check your FXML file 'LoginWindow.fxml'.";
@@ -80,14 +93,14 @@ public class LoginWindowController {
 
     }
 
-    private void initSettings(){
+    private void initSettings() {
         LoginPane.setVisible(true);
         LoginPane.setDisable(false);
         RegistrationPane.setVisible(true);
         RegistrationPane.setDisable(true);
     }
 
-    private void clearText(){
+    private void clearText() {
         loginField1.setText("");
         loginField2.setText("");
         passwordField1.setText("");
@@ -103,31 +116,61 @@ public class LoginWindowController {
         AnimationSwitchWindow.switchToLogin(LoginPane, RegistrationPane);
     }
 
-    public void onLoginButtonClick(){
+    public void onLoginButtonClick() {
         String login = loginField1.getText();
         String password = passwordField1.getText();
-        System.out.println("Логин: " + login);
-        System.out.println("Пароль: " + password);
+
+        PipeHandler pipeHandler = new PipeHandler();
+        String response = pipeHandler.sendLoginData(login, password);
+        System.out.println("onLoginButtonClick: response: " + response);
+
+        if (response.contains("Validation error: User not found")) {
+            MessageHandler.showError("User not found");
+            return;
+        }
+        if(response.contains("password cannot be empty") || response.contains("login cannot be empty")){
+            MessageHandler.showWarning("Fields cannot be empty");
+            return;
+        }
+        if(response.contains("Validation error: Password is incorrect")) {
+            PlayShakeAnimation();
+            return;
+        }
+
+        MessageHandler.showOk("You have successfully logged in");
+
+        MainApplication.switchScene("templates/main-window.fxml");
 
     }
 
-    public void onRegisterButtonClick(){
+    public void onRegisterButtonClick() {
         String login = loginField2.getText();
         String password = passwordField2.getText();
         String email = emailField.getText();
-        System.out.println("Логин: " + login);
-        System.out.println("Пароль: " + password);
-        System.out.println("Почта: " + email);
 
         PipeHandler pipeHandler = new PipeHandler();
         String response = pipeHandler.sendRegistrationData(login, password, email);
-        System.out.println("Response: " + response);
+        System.out.println("onRegisterButtonClick: response: " + response);
+
+        if(response.contains("password cannot be empty") || response.contains("login cannot be empty") || response.contains("email cannot be empty")){
+            MessageHandler.showWarning("Fields cannot be empty");
+            return;
+        }
+        if(response.contains("email should be valid")) {
+            MessageHandler.showError("Email should be valid");
+            return;
+        }
+        if(response.contains("Validation error:  User with this login already exists")) {
+            MessageHandler.showError("User already exists");
+            return;
+        }
+
+        MessageHandler.showOk(response);
     }
 
-    public void PlayShakeAnimation(){
+    public void PlayShakeAnimation() {
         new AnimationShake(passwordField1).play();
     }
-
 
 
 }
