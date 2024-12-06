@@ -16,8 +16,8 @@ public class PipeHandler {
             // Read response from the named pipe
             response = pipe.readLine();
         } catch (IOException e) {
-            System.out.println("PipeHandler: error pipe connection");
-            // e.printStackTrace();
+            // System.out.println("PipeHandler: Error pipe connection");
+            e.printStackTrace();
         }
 
         return response;

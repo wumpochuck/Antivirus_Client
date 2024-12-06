@@ -3,6 +3,7 @@ module ru.mtuci.antivirus {
     requires javafx.fxml;
     requires org.controlsfx.controls;
     requires static lombok;
+    requires java.desktop;
 
     opens ru.mtuci.antivirus to javafx.fxml;
     exports ru.mtuci.antivirus;

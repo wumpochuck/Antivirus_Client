@@ -60,6 +60,8 @@ public class MainWindowController {
 
         initSettings();
 
+        mainButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onMainButtonClicked());
+        profileButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onProfileButtonClicked());
         exitButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> onExitButtonClicked());
 
         assert buttonsPane != null : "fx:id=\"buttonsPane\" was not injected: check your FXML file 'main-window.fxml'.";
@@ -75,13 +77,33 @@ public class MainWindowController {
     }
 
     private void initSettings() {
-        hideAllPanes();
-        mainPane.setVisible(true);
+        buttonsPane.setLayoutX(-300);
+        switchToPane(mainPane);
+        recolorButtonBackground(mainButtonBackground);
     }
 
-    private void hideAllPanes(){
+    private void switchToPane(AnchorPane chosenPane) {
         mainPane.setVisible(false);
         profilePane.setVisible(false);
+
+        chosenPane.setVisible(true);
+    }
+
+    private void recolorButtonBackground(AnchorPane chosenButtonBackground) {
+        mainButtonBackground.setStyle("-fx-background-color: #6F8FAF; -fx-background-radius: 25");
+        profileButtonBackground.setStyle("-fx-background-color: #6F8FAF; -fx-background-radius: 25");
+
+        chosenButtonBackground.setStyle("-fx-background-color: #667594; -fx-background-radius: 25");
+    }
+
+    private void onMainButtonClicked() {
+        switchToPane(mainPane);
+        recolorButtonBackground(mainButtonBackground);
+    }
+
+    private void onProfileButtonClicked() {
+        switchToPane(profilePane);
+        recolorButtonBackground(profileButtonBackground);
     }
 
     private void onExitButtonClicked() {

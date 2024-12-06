@@ -120,10 +120,22 @@ public class LoginWindowController {
         String login = loginField1.getText();
         String password = passwordField1.getText();
 
+        // DELETE WHEN CLIENT WILL BE READY
+        if(login.equals("admin") && password.equals("admin")){
+            MessageHandler.showOk("Login completed");
+            MainApplication.switchScene("templates/main-window.fxml");
+            return;
+        }
+        // DELETE WHEN CLIENT WILL BE READY
+
         PipeHandler pipeHandler = new PipeHandler();
         String response = pipeHandler.sendLoginData(login, password);
         System.out.println("onLoginButtonClick: response: " + response);
 
+        if (response == null){
+            MessageHandler.showError("Server is not available");
+            return;
+        }
         if (response.contains("Validation error: User not found")) {
             MessageHandler.showError("User not found");
             return;
@@ -136,10 +148,14 @@ public class LoginWindowController {
             PlayShakeAnimation();
             return;
         }
+        if(response.contains("JWT{")){
+            MessageHandler.showOk(response);
+            MainApplication.switchScene("templates/main-window.fxml");
+            return;
+        }
 
-        MessageHandler.showOk("You have successfully logged in");
+        MessageHandler.showError("Internal server error");
 
-        MainApplication.switchScene("templates/main-window.fxml");
 
     }
 
@@ -152,6 +168,10 @@ public class LoginWindowController {
         String response = pipeHandler.sendRegistrationData(login, password, email);
         System.out.println("onRegisterButtonClick: response: " + response);
 
+        if(response == null){
+            MessageHandler.showError("Server is not available");
+            return;
+        }
         if(response.contains("password cannot be empty") || response.contains("login cannot be empty") || response.contains("email cannot be empty")){
             MessageHandler.showWarning("Fields cannot be empty");
             return;
@@ -164,8 +184,13 @@ public class LoginWindowController {
             MessageHandler.showError("User already exists");
             return;
         }
+        if(response.contains("JWT{")){
+            MessageHandler.showOk("Registration completed,\nYou can now login");
+            return;
+        }
 
-        MessageHandler.showOk(response);
+        MessageHandler.showError("Internal server error");
+
     }
 
     public void PlayShakeAnimation() {
