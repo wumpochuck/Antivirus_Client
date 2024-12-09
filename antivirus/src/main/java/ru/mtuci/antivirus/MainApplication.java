@@ -15,20 +15,10 @@ public class MainApplication extends Application {
 
     private static Stage primaryStage;
 
-//    @Override
-//    public void start(Stage stage) throws IOException {
-//        primaryStage = stage;
-//        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("templates/login-window.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
-//        primaryStage.setTitle("Antivirus");
-//        primaryStage.setScene(scene);
-//        primaryStage.show();
-//    }
-
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
-        primaryStage.setTitle("Antivirus");
+        primaryStage.setTitle("Antimage");
 
         Platform.setImplicitExit(false);
         createTrayIcon();
@@ -46,7 +36,7 @@ public class MainApplication extends Application {
 
         SystemTray tray = SystemTray.getSystemTray();
         // Get image from /resources/static/
-        Image image = Toolkit.getDefaultToolkit().getImage(MainApplication.class.getResource("/static/house-icon.png"));
+        Image image = Toolkit.getDefaultToolkit().getImage(MainApplication.class.getResource("/static/icon.png"));
 
         ActionListener showListener = new ActionListener() {
             @Override
@@ -74,7 +64,7 @@ public class MainApplication extends Application {
         });
         popup.add(exitItem);
 
-        TrayIcon trayIcon = new TrayIcon(image, "Antivirus", popup);
+        TrayIcon trayIcon = new TrayIcon(image, "Antimage", popup);
         trayIcon.setImageAutoSize(true);
         trayIcon.addActionListener(showListener);
 
@@ -87,7 +77,7 @@ public class MainApplication extends Application {
 
     private void showStage() throws IOException {
         if (primaryStage.getScene() == null) {
-            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("templates/login-window.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("templates/main-window.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
             primaryStage.setScene(scene);
         }

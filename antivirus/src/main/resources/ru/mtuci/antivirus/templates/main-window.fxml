@@ -1,124 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #DCDCDC;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.mtuci.antivirus.controllers.MainWindowController">
+<AnchorPane fx:id="MainWindow" maxHeight="700.0" maxWidth="1200.0" minHeight="700.0" minWidth="1200.0" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #172A3A;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.mtuci.antivirus.controllers.MainWindowController">
    <children>
-      <AnchorPane layoutY="-50.0" prefHeight="125.0" prefWidth="1200.0" style="-fx-background-color: #6F8FAF; -fx-background-radius: 25; -fx-border-color: #577399; -fx-border-radius: 25;">
+      <AnchorPane fx:id="ButtonsPane" layoutY="600.0" maxHeight="100.0" maxWidth="1200.0" minHeight="100.0" minWidth="1200.0" prefHeight="100.0" prefWidth="1200.0">
          <children>
-            <Text fill="WHITE" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Anti-malware bibibybyb" textAlignment="CENTER" wrappingWidth="1200.0">
-               <font>
-                  <Font name="System Bold" size="36.0" />
-               </font>
-            </Text>
+            <Pane fx:id="HomeButtonBackground" layoutX="390.0" layoutY="10.0" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #004346; -fx-background-radius: 25;">
+               <children>
+                  <ImageView fx:id="HomeButton" fitHeight="60.0" fitWidth="60.0" layoutX="30.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../static/home-dark.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Pane fx:id="LicenseButtonBackground" layoutX="690.0" layoutY="10.0" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #004346; -fx-background-radius: 25;">
+               <children>
+                  <ImageView fx:id="LicenseButton" fitHeight="60.0" fitWidth="60.0" layoutX="32.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../static/license-dark.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Pane fx:id="ProfileButtonBackground" layoutX="540.0" layoutY="10.0" prefHeight="80.0" prefWidth="120.0" style="-fx-background-color: #004346; -fx-background-radius: 25;">
+               <children>
+                  <ImageView fx:id="ProfileButton" fitHeight="60.0" fitWidth="60.0" layoutX="36.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../static/profile-dark.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </children>
+            </Pane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="mainPane" layoutX="100.0" layoutY="100.0" prefHeight="600.0" prefWidth="1100.0" visible="false">
+      <AnchorPane fx:id="LoginPage" prefHeight="600.0" prefWidth="1200.0" visible="false">
          <children>
-            <Text fx:id="welcomeText" fill="#495867" layoutX="100.0" layoutY="140.0" nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Добро пожаловать, &#10;user!" textOrigin="CENTER">
-               <font>
-                  <Font name="System Bold" size="40.0" />
-               </font>
-            </Text>
+            <Pane layoutX="125.0" layoutY="50.0" prefHeight="500.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;">
+               <children>
+                  <Text fill="#172a3a" layoutX="90.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Вход в аккаунт">
+                     <font>
+                        <Font name="System Bold" size="30.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="logLoginField" layoutX="75.0" layoutY="125.0" prefHeight="40.0" prefWidth="250.0" promptText="login" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="logPasswordField" layoutX="75.0" layoutY="175.0" prefHeight="40.0" prefWidth="250.0" promptText="password" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <ToggleButton fx:id="logShowPassword" layoutX="75.0" layoutY="225.0" mnemonicParsing="false" style="-fx-background-color: #FFFFFF;" text="Показать пароль">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ToggleButton>
+                  <Button fx:id="logButton" layoutX="75.0" layoutY="425.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: #172A3A; -fx-background-radius: 25;" text="Войти" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </Pane>
+            <Pane layoutX="675.0" layoutY="50.0" prefHeight="500.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 50;">
+               <children>
+                  <Text fill="#172a3a" layoutX="108.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Регистрация">
+                     <font>
+                        <Font name="System Bold" size="30.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="regLoginField" layoutX="75.0" layoutY="125.0" prefHeight="40.0" prefWidth="250.0" promptText="login" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="regPasswordField" layoutX="75.0" layoutY="175.0" prefHeight="40.0" prefWidth="250.0" promptText="password" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <ToggleButton fx:id="regShowPassword" layoutX="75.0" layoutY="225.0" mnemonicParsing="false" style="-fx-background-color: #FFFFFF;" text="Показать пароль">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ToggleButton>
+                  <TextField fx:id="regEmailField" layoutX="75.0" layoutY="275.0" prefHeight="40.0" prefWidth="250.0" promptText="email" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="regButton" layoutX="75.0" layoutY="425.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: #172A3A; -fx-background-radius: 25;" text="Создать аккаунт" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </Pane>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="profilePane" layoutX="100.0" layoutY="100.0" prefHeight="600.0" prefWidth="1100.0">
+      <AnchorPane fx:id="ProfilePage" prefHeight="600.0" prefWidth="1200.0" visible="false">
          <children>
-            <Text fill="#495867" layoutX="50.0" layoutY="13.0" nodeOrientation="LEFT_TO_RIGHT" strokeType="OUTSIDE" strokeWidth="0.0" text="Ваш профиль" textOrigin="CENTER">
+            <AnchorPane fx:id="profileUpdatePane" layoutX="900.0" layoutY="150.0" prefHeight="325.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
+               <children>
+                  <TextField fx:id="profileNewLoginText" layoutX="13.0" layoutY="15.0" prefHeight="40.0" prefWidth="175.0" promptText="new login" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="profileNewPasswordText" layoutX="13.0" layoutY="70.0" prefHeight="40.0" prefWidth="175.0" promptText="new password" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="profileNewEmailText" layoutX="13.0" layoutY="125.0" prefHeight="40.0" prefWidth="175.0" promptText="new email" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="profileUpdatePasswordText" layoutX="13.0" layoutY="213.0" prefHeight="40.0" prefWidth="175.0" promptText="password" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="profileUpdateButton" layoutX="13.0" layoutY="265.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #172A3A; -fx-background-radius: 25;" text="Обновить" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </AnchorPane>
+            <ImageView fx:id="profileAvatar" fitHeight="200.0" fitWidth="200.0" layoutX="100.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../static/profile-icons/profile_icon_1.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="profileText" fill="WHITE" layoutX="350.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Здравствуйте, user!&#10;">
                <font>
-                  <Font name="System Bold" size="40.0" />
+                  <Font name="System Bold" size="30.0" />
                </font>
             </Text>
+            <Button fx:id="profileUpdateInfoButton" layoutX="900.0" layoutY="50.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;" text="Обновить профиль" textFill="#172a3a">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="profileExitButton" layoutX="900.0" layoutY="100.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;" text="Выйти из аккаунта" textFill="#172a3a">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="buttonsPane" layoutX="-300.0" layoutY="90.0" onMouseEntered="#showButtonsPane" onMouseExited="#hideButtonsPane" prefHeight="600.0" prefWidth="400.0" style="-fx-background-color: #6F8FAF; -fx-background-radius: 25; -fx-border-color: #577399; -fx-border-radius: 25;">
+      <AnchorPane fx:id="MainPageBlocked" prefHeight="600.0" prefWidth="1200.0" visible="false">
          <children>
-            <Button fx:id="exitButton" alignment="CENTER" layoutX="50.0" layoutY="525.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #495867; -fx-background-radius: 25;" text="ВЫХОД" textFill="#f7f7ff">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="325.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true">
+            <Pane layoutX="350.0" layoutY="200.0" prefHeight="200.0" prefWidth="500.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
+               <children>
+                  <Text fill="#172a3a" layoutX="29.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="У вас нет доступа к антивирусу&#10;Для получения доступа&#10;добавьте ключ активации" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="29.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+            <ImageView fitHeight="142.0" fitWidth="242.0" layoutX="587.0" layoutY="489.0" pickOnBounds="true" preserveRatio="true" rotate="63.4">
                <image>
-                  <Image url="@../../../../static/exit-icon.png" />
+                  <Image url="@../../../../static/arrow.png" />
                </image>
             </ImageView>
-            <AnchorPane fx:id="mainButtonBackground" layoutY="1.0" prefHeight="100.0" prefWidth="400.0" style="-fx-background-color: #6F8FAF; -fx-background-radius: 25;" />
-            <Button fx:id="mainButton" alignment="CENTER" layoutX="50.0" layoutY="25.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #495867; -fx-background-radius: 25;" text="ГЛАВНАЯ" textFill="#f7f7ff">
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="MainPage" prefHeight="600.0" prefWidth="1200.0" visible="false">
+         <children>
+            <Pane layoutX="350.0" layoutY="200.0" prefHeight="200.0" prefWidth="500.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
+               <children>
+                  <Text fill="#172a3a" layoutX="77.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Антивирус доступен&#10;Приятного пользования" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="29.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="LicensePage" prefHeight="600.0" prefWidth="1200.0">
+         <children>
+            <Text fx:id="licenseText" fill="WHITE" layoutX="100.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текущая лицензия:&#10;Отсутствует&#10;">
                <font>
-                  <Font name="System Bold" size="20.0" />
+                  <Font name="System Bold" size="30.0" />
                </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="325.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../static/house-icon.png" />
-               </image>
-            </ImageView>
-            <Button alignment="CENTER" layoutX="50.0" layoutY="125.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #495867; -fx-background-radius: 25;" text="КНОПКА" textFill="#f7f7ff">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="315.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../assets/buyIcon.png" />
-               </image>
-            </ImageView>
-            <Button alignment="CENTER" layoutX="50.0" layoutY="225.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #495867; -fx-background-radius: 25;" text="КНОПКА" textFill="#f7f7ff">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="325.0" layoutY="225.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../assets/employerIcon.png" />
-               </image>
-            </ImageView>
-            <Button alignment="CENTER" layoutX="50.0" layoutY="325.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #495867; -fx-background-radius: 25;" text="КНОПКА" textFill="#f7f7ff">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="325.0" layoutY="325.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../assets/adminIcon.png" />
-               </image>
-            </ImageView>
-            <AnchorPane fx:id="profileButtonBackground" layoutY="400.0" prefHeight="100.0" prefWidth="400.0" style="-fx-background-color: #6F8FAF; -fx-background-radius: 25;" />
-            <Button fx:id="profileButton" alignment="CENTER" layoutX="50.0" layoutY="425.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #495867; -fx-background-radius: 25;" text="ПРОФИЛЬ" textFill="#f7f7ff">
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="320.0" layoutY="420.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../../../static/user-icon.png" />
-               </image>
-            </ImageView>
-         </children></AnchorPane>
+            </Text>
+            <AnchorPane layoutX="700.0" layoutY="50.0" prefHeight="125.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
+               <children>
+                  <TextField fx:id="licenseActivateKeyText" layoutX="13.0" layoutY="15.0" prefHeight="40.0" prefWidth="375.0" promptText="license key" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="licenseActivateButton" layoutX="13.0" layoutY="70.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #172A3A; -fx-background-radius: 25;" text="Активировать" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="700.0" layoutY="199.0" prefHeight="250.0" prefWidth="400.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
+               <children>
+                  <TextField fx:id="licenseUpdateKeyText" layoutX="13.0" layoutY="15.0" prefHeight="40.0" prefWidth="375.0" promptText="license key" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="licenseUpdateButton" layoutX="13.0" layoutY="182.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #172A3A; -fx-background-radius: 25;" text="Продлить" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="19.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <TextField fx:id="licenseUpdateLoginText" layoutX="13.0" layoutY="70.0" prefHeight="40.0" prefWidth="175.0" promptText="login" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="licenseUpdatePasswordText" layoutX="13.0" layoutY="125.0" prefHeight="40.0" prefWidth="175.0" promptText="password" style="-fx-background-color: #FFFFFF; -fx-border-color: #172A3A; -fx-border-radius: 25; -fx-border-width: 2;">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </TextField>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
