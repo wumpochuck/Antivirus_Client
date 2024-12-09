@@ -18,13 +18,15 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
-        primaryStage.setTitle("Antimage");
+        primaryStage.setTitle("Antikripus");
 
         Platform.setImplicitExit(false);
-        createTrayIcon();
+        // createTrayIcon();
+
+        showStage();
 
         // Initially hide the stage
-        primaryStage.hide();
+        // primaryStage.hide();
     }
 
     private void createTrayIcon() {
@@ -35,7 +37,6 @@ public class MainApplication extends Application {
         }
 
         SystemTray tray = SystemTray.getSystemTray();
-        // Get image from /resources/static/
         Image image = Toolkit.getDefaultToolkit().getImage(MainApplication.class.getResource("/static/icon.png"));
 
         ActionListener showListener = new ActionListener() {
@@ -64,7 +65,7 @@ public class MainApplication extends Application {
         });
         popup.add(exitItem);
 
-        TrayIcon trayIcon = new TrayIcon(image, "Antimage", popup);
+        TrayIcon trayIcon = new TrayIcon(image, "Antikripus", popup);
         trayIcon.setImageAutoSize(true);
         trayIcon.addActionListener(showListener);
 
