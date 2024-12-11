@@ -18,15 +18,16 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("templates/main-window.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Antikripus");
 
         Platform.setImplicitExit(false);
-        // createTrayIcon();
-
-        showStage();
+        createTrayIcon();
 
         // Initially hide the stage
-        // primaryStage.hide();
+        primaryStage.hide();
     }
 
     private void createTrayIcon() {
@@ -53,11 +54,13 @@ public class MainApplication extends Application {
         };
 
         PopupMenu popup = new PopupMenu();
-        MenuItem openItem = new MenuItem("Open");
+        MenuItem openItem = new MenuItem("Показать Antikripus");
         openItem.addActionListener(showListener);
         popup.add(openItem);
 
-        MenuItem exitItem = new MenuItem("Exit");
+        popup.addSeparator();
+
+        MenuItem exitItem = new MenuItem("Выход");
         exitItem.addActionListener(e -> {
             tray.remove(tray.getTrayIcons()[0]);
             Platform.exit();
@@ -77,11 +80,6 @@ public class MainApplication extends Application {
     }
 
     private void showStage() throws IOException {
-        if (primaryStage.getScene() == null) {
-            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("templates/main-window.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
-            primaryStage.setScene(scene);
-        }
         primaryStage.show();
         primaryStage.toFront();
     }
