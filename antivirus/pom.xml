@@ -55,9 +55,19 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
+                        <id>default-cli</id>
                         <goals>
-                            <goal>run</goal>
+                            <goal>jlink</goal>
                         </goals>
+                        <configuration>
+                            <mainClass>ru.mtuci.antivirus.MainApplication</mainClass>
+                            <launcher>app</launcher>
+                            <jlinkZipName>app</jlinkZipName>
+                            <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

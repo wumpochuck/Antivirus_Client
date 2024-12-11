@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import ru.mtuci.antivirus.MainApplication;
 import ru.mtuci.antivirus.animations.AnimationHover;
 import ru.mtuci.antivirus.animations.AnimationPageTransition;
 import ru.mtuci.antivirus.utils.MessageHandler;
@@ -195,8 +196,8 @@ public class MainWindowController {
 
     @FXML
     void initialize() {
-        initSettings();
         getDeviceNameAndMacAddress();
+        initSettings();
 
         /// Control buttons
         HomeButton.setOnMouseClicked(event -> onHomeButtonClicked());
@@ -238,6 +239,27 @@ public class MainWindowController {
 
         if(IS_AUTHORIZED){
             switchButtonsEnabled(true);
+
+
+            /// Set unique profile image for any user
+            setUniqueAvatar();
+
+            String licenseCode = PipeHandler.checkActivation();
+            if(licenseCode != null){ /// Временный костыль (а может и нет)
+
+                IS_HAVE_LICENSE = true;
+                licenseActivateKeyText.setText(licenseCode);
+                licenseActivatePane.setDisable(true);
+                String response = PipeHandler.getActiveLicense(MAC_ADDRESS, licenseCode);
+                if(response == null){
+                    System.out.println("checkForAuthorization: response is null, check server status");
+                    return;
+                }
+                TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
+                licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
+
+            }
+
         } else {
             switchButtonsEnabled(false);
         }
@@ -285,32 +307,20 @@ public class MainWindowController {
         String response = PipeHandler.sendLoginData(login, password);
         System.out.println("onLoginButtonClicked: response: " + response);
 
-        if (response == null){
-            MessageHandler.showError("Сервер недоступен, повторите попытку позже");
-            return;
-        }
-        if (response.contains("Validation error: User not found")) {
-            MessageHandler.showError("Пользователь не найден");
-            return;
-        }
-        if(response.contains("password cannot be empty") || response.contains("login cannot be empty")){
-            MessageHandler.showWarning("Поля не могут быть пустыми");
-            return;
-        }
-        if(response.contains("Validation error: Password is incorrect")) {
-            MessageHandler.showError("Неверный пароль");
-            return;
-        }
+        handleResponse(response);
+
         if(response.contains("Login completed")){
             MessageHandler.showOk("Вход выполнен");
             switchButtonsEnabled(true);
             IS_AUTHORIZED = true;
             LOGIN = login;
+
+            setUniqueAvatar();
+
             onProfileButtonClicked();
-            return;
         }
 
-        MessageHandler.showError("Сервер недоступен, повторите попытку позже");
+
 
     }
 
@@ -341,32 +351,18 @@ public class MainWindowController {
         String response = PipeHandler.sendRegistrationData(login, password, email);
         System.out.println("onRegisterButtonClicked: response: " + response);
 
-        if (response == null){
-            MessageHandler.showError("Сервер недоступен, повторите попытку позже");
-            return;
-        }
-        if(response.contains("cannot be empty") || response.contains("should be valid")){
-            MessageHandler.showError("Заполните все поля правильно");
-            return;
-        }
-        if(response.contains("Validation error: User with this login already exists")){
-            MessageHandler.showError("Пользователь с таким логином уже существует");
-            return;
-        }
-        if(response.contains("Validation error: User with this email already exists")){
-            MessageHandler.showError("Пользователь с таким email уже существует");
-            return;
-        }
+        handleResponse(response);
+
         if(response.contains("Registration completed")){
             MessageHandler.showOk("Регистрация завершена");
             switchButtonsEnabled(true);
             IS_AUTHORIZED = true;
             LOGIN = login;
-            onProfileButtonClicked();
-            return;
-        }
 
-        MessageHandler.showError("Сервер недоступен, повторите попытку позже");
+            setUniqueAvatar();
+
+            onProfileButtonClicked();
+        }
 
     }
 
@@ -436,6 +432,9 @@ public class MainWindowController {
             IS_HAVE_LICENSE = true;
             TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
             licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
+
+            licenseActivateKeyText.setText(activationCode);
+            licenseActivatePane.setDisable(true);
         }
     }
 
@@ -541,14 +540,29 @@ public class MainWindowController {
         }
 
         Map<String, String> errorMessages = new HashMap<>();
+
+        // Login
+        errorMessages.put("Validation error: User not found", "Пользователь не найден");
+        errorMessages.put("cannot be empty", "Заполните все поля правильно");
+        errorMessages.put("Valudation error: Password is incorrect", "Неправильный пароль");
+
+        // Registration
+        errorMessages.put("should be valid", "Заполните все поля правильно");
+        errorMessages.put("Validation error: User with this login already exists","Пользователь с таким логином уже существует");
+        errorMessages.put("Validation error: User with this email already exists", "Пользователь с таким email уже существует");
+
+        // Activation
         errorMessages.put("Validation error: User is not authenticated", "Попытка мошенничества!");
         errorMessages.put("Validation error: Device already registered by another user", "Устройство уже зарегистрировано другим пользователем");
         errorMessages.put("Validation error: License not found", "Лицензия не найдена");
-        errorMessages.put("Validation error: User not found", "Пользователь не найден");
-        errorMessages.put("Validation error: Wrong user", "Лицензия активирована другим пользователем");
+
+        errorMessages.put("Validation error: License already activated", "Лицензия уже активирована");
         errorMessages.put("License is blocked", "Лицензия заблокирована");
         errorMessages.put("License is expired", "Лицензия истекла");
         errorMessages.put("Device count exceeded", "Превышено количество устройств");
+
+        //Info
+        errorMessages.put("Validation error: Device not found", "Устроиство не найдено");
 
         for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
             if (response.contains(entry.getKey())) {
@@ -584,5 +598,9 @@ public class MainWindowController {
             e.printStackTrace();
             return "Ошибка при обработке\nтикета, попробуйте перезайти\nна страницу";
         }
+    }
+
+    public void setUniqueAvatar(){
+        profileAvatar.setImage(new Image(String.valueOf(MainApplication.class.getResource("/static/profile-icons/profile_icon_" + (LOGIN.hashCode() % 5 + 1) + ".png"))));
     }
 }

@@ -59,7 +59,6 @@ public class PipeHandler {
         return "false";
     }
 
-    /*
     public static String checkActivation(){
         String response = sendData("licensecheck:");
         System.out.println("PipeHandler: checkActivation: response: " + response);
@@ -68,7 +67,6 @@ public class PipeHandler {
         }
         return null;
     }
-    */
 
     public static void clearAuthorization(){
         String response = sendData("jwtclear:");
