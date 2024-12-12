@@ -309,7 +309,7 @@ public class MainWindowController {
 
         handleResponse(response);
 
-        if(response.contains("Login completed")){
+        if(response != null && response.contains("Login completed")){
             MessageHandler.showOk("Вход выполнен");
             switchButtonsEnabled(true);
             IS_AUTHORIZED = true;
@@ -353,7 +353,7 @@ public class MainWindowController {
 
         handleResponse(response);
 
-        if(response.contains("Registration completed")){
+        if(response != null && response.contains("Registration completed")){
             MessageHandler.showOk("Регистрация завершена");
             switchButtonsEnabled(true);
             IS_AUTHORIZED = true;
