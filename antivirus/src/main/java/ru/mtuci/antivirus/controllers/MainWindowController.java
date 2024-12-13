@@ -320,8 +320,6 @@ public class MainWindowController {
             onProfileButtonClicked();
         }
 
-
-
     }
 
     public void onRegisterButtonClicked(){
@@ -542,9 +540,9 @@ public class MainWindowController {
         Map<String, String> errorMessages = new HashMap<>();
 
         // Login
-        errorMessages.put("Validation error: User not found", "Пользователь не найден");
+        errorMessages.put("Validation error: User with this login not found", "Пользователь не найден");
         errorMessages.put("cannot be empty", "Заполните все поля правильно");
-        errorMessages.put("Valudation error: Password is incorrect", "Неправильный пароль");
+        errorMessages.put("Validation error: Password is incorrect", "Неправильный пароль");
 
         // Registration
         errorMessages.put("should be valid", "Заполните все поля правильно");
