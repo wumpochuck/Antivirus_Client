@@ -14,6 +14,7 @@ import java.io.IOException;
 public class MainApplication extends Application {
 
     private static Stage primaryStage;
+    private static boolean inTrayMode = true;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -26,8 +27,16 @@ public class MainApplication extends Application {
         Platform.setImplicitExit(false);
         createTrayIcon();
 
-        // Initially hide the stage
-        primaryStage.hide();
+        // Settings
+        primaryStage.setResizable(false);
+
+        if(inTrayMode){
+            primaryStage.hide();
+        }else{
+            primaryStage.show();
+        }
+
+
     }
 
     private void createTrayIcon() {
@@ -84,17 +93,14 @@ public class MainApplication extends Application {
         primaryStage.toFront();
     }
 
-    public static void switchScene(String fxmlFile) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource(fxmlFile));
-            Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
-            primaryStage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
+
+        if(args.length > 0){
+            if(args[0].equals("--no-tray")){
+                inTrayMode = false;
+            }
+        }
+
         launch();
     }
 }

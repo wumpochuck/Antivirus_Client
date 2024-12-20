@@ -13,9 +13,8 @@ public class PipeHandler {
         try (RandomAccessFile pipe = new RandomAccessFile(PIPE_PATH, "rw")) {
             // Write data to the named pipe
             pipe.writeBytes(data);
-            pipe.writeByte('\n'); // Ensure the data is properly terminated
+            pipe.writeByte('\n');
 
-            // Read response from the named pipe
             response = pipe.readLine();
         } catch (IOException e) {
             System.out.println("PipeHandler: sendData: Error pipe connection: " + e.getMessage());
@@ -45,8 +44,22 @@ public class PipeHandler {
         return sendData(data);
     }
 
-    public static String getActiveLicense(String macAddress, String licenseCode){
-        String data = "license_info"+ ":" + macAddress + ":" + licenseCode;
+    public static String getLicenseInfo(String macAddress){
+        String data = "license_info"+ ":" + macAddress;
+        return sendData(data);
+    }
+
+    public static String updateLicense(String login, String password, String licenseCode, String macAddress){
+        String data = "license_update:" + login + ":" + password + ":" + licenseCode + ":" + macAddress;
+        return sendData(data);
+    }
+
+    public static String updateJWT(){
+        return sendData("jwtupdate:");
+    }
+
+    public static String sendUpdateUserData(String newLogin, String newPassword, String newEmail, String password){
+        String data = "update_user:" + password + ":" + newLogin + ":" + newPassword + ":" + newEmail;
         return sendData(data);
     }
 
@@ -57,15 +70,6 @@ public class PipeHandler {
             return response;
         }
         return "false";
-    }
-
-    public static String checkActivation(){
-        String response = sendData("licensecheck:");
-        System.out.println("PipeHandler: checkActivation: response: " + response);
-        if (response != null && !response.isEmpty()){
-            return response;
-        }
-        return null;
     }
 
     public static void clearAuthorization(){

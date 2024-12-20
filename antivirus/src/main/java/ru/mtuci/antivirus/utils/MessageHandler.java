@@ -34,7 +34,7 @@ public class MessageHandler {
 
     private static void applyCustomStyle(Alert alert) {
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill:  #172A3A; -fx-font-weight: bold; -fx-font-size: 15px;");
+        dialogPane.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #172A3A; -fx-font-weight: bold; -fx-font-size: 15px;");
     }
 
 

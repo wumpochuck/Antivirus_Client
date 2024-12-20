@@ -1,5 +1,6 @@
 package ru.mtuci.antivirus.controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -19,10 +20,16 @@ import ru.mtuci.antivirus.utils.PipeHandler;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Thread.sleep;
 
 public class MainWindowController {
 
@@ -64,9 +71,6 @@ public class MainWindowController {
 
     @FXML
     private AnchorPane ProfilePage;
-
-    @FXML
-    private Button licenseGetInfoButton;
 
     @FXML
     private Button licenseActivateButton;
@@ -194,6 +198,10 @@ public class MainWindowController {
     private boolean IS_AUTHORIZED = false;
     private boolean IS_HAVE_LICENSE = false;
 
+    // Other variables
+
+    private ScheduledExecutorService scheduler;
+
     @FXML
     void initialize() {
         getDeviceNameAndMacAddress();
@@ -212,10 +220,58 @@ public class MainWindowController {
         profileUpdateInfoButton.setOnMouseClicked(event -> onUpdateProfileInfoClicked());
         profileExitButton.setOnMouseClicked(event -> onProfileExitClicked());
 
+        profileUpdateButton.setOnMouseClicked(event -> onUpdateButtonClicked());
+
         /// License buttons
         licenseActivateButton.setOnMouseClicked(event -> onLicenseActivateClicked());
-        licenseGetInfoButton.setOnMouseClicked(event -> onLicenseInfoClicked());
+        licenseUpdateButton.setOnMouseClicked(event -> onLicenseUpdateClicked());
 
+    }
+
+    /// Thread methods (For ticket, JWT)
+
+    private void startLicenseUpdateScheduler() {
+        if (scheduler == null || scheduler.isShutdown()) { // Check if the scheduler is already running
+            scheduler = Executors.newScheduledThreadPool(1); // Create a scheduler with a single thread
+            System.out.println("Creating a scheduler with a single thread\n");
+            scheduler.scheduleAtFixedRate(this::updatingThread, 0, 1, TimeUnit.MINUTES); // Run every 1 minute (change to 60 mins later)
+        } else {
+            System.out.println("Scheduler is already running\n");
+        }
+    }
+
+    // Method to update license information
+    private void updatingThread() {
+        Platform.runLater(() -> {
+            try {
+                System.out.println("Updating license information and jwt...");
+                checkForLicense();
+                sleep(100);
+                updateJWT();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    // Method to stop the scheduler
+    public void onClose() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            System.out.println("Shutting down the scheduler on application close\n");
+            scheduler.shutdown(); // Shut down the scheduler when the application closes
+            try {
+                // Wait for all tasks to finish
+                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                    System.out.println("Forcing task termination\n");
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                System.out.println("Termination was interrupted\n");
+                scheduler.shutdownNow(); // Force termination in case of interruption
+            }
+        } else {
+            System.out.println("Scheduler was already stopped or not started\n");
+        }
     }
 
     /// With app launching ------------------------------------------------------------------------
@@ -235,33 +291,75 @@ public class MainWindowController {
         LOGIN = PipeHandler.checkAuthorization();
         if(!LOGIN.equals("false")){
             IS_AUTHORIZED = true;
+            // startLicenseUpdateScheduler();
         }
 
         if(IS_AUTHORIZED){
             switchButtonsEnabled(true);
 
-
             /// Set unique profile image for any user
             setUniqueAvatar();
-
-            String licenseCode = PipeHandler.checkActivation();
-            if(licenseCode != null){ /// Временный костыль (а может и нет)
-
-                IS_HAVE_LICENSE = true;
-                licenseActivateKeyText.setText(licenseCode);
-                licenseActivatePane.setDisable(true);
-                String response = PipeHandler.getActiveLicense(MAC_ADDRESS, licenseCode);
-                if(response == null){
-                    System.out.println("checkForAuthorization: response is null, check server status");
-                    return;
-                }
-                TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
-                licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
-
-            }
+            // checkForLicense();
+            startLicenseUpdateScheduler();
 
         } else {
             switchButtonsEnabled(false);
+        }
+    }
+
+    public void checkForLicense(){
+        String response = PipeHandler.getLicenseInfo(MAC_ADDRESS);
+        if(response == null){
+            licenseActivateKeyText.setPromptText("Не удалось получить данные");
+        }else if(response.contains("License for this device not found or blocked")){
+            IS_HAVE_LICENSE = false;
+            licenseText.setText("Текущая лицензия: \nЛицензия не найдена или заблокирована");
+            licenseActivatePane.setDisable(false);
+            licenseActivateKeyText.setPromptText("Введите код лицензии");
+        }
+        else if(response.contains("License expired")){
+            IS_HAVE_LICENSE = false;
+            licenseText.setText("Текущая лицензия: \nСрок действия лицензии истек, она была заблокирована");
+            licenseActivatePane.setDisable(false);
+//            licenseActivateKeyText.setText("Лицензия активирована");
+            licenseActivateKeyText.setPromptText("Введите код лицензии");
+        }
+        else if(response.contains("Ticket{")){
+            TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
+            licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
+
+            IS_HAVE_LICENSE = true;
+            licenseActivateKeyText.setPromptText("Лицензия активирована");
+            licenseActivatePane.setDisable(true);
+        }else{
+            licenseActivateKeyText.setPromptText("Лицензия не активирована");
+        }
+//        String licenseCode = PipeHandler.checkActivation();
+//        if(licenseCode != null){
+//
+//            IS_HAVE_LICENSE = true;
+//            licenseActivateKeyText.setText(licenseCode);
+//            licenseActivatePane.setDisable(true);
+//            String response = PipeHandler.getActiveLicense(MAC_ADDRESS, licenseCode);
+//            if(response == null){
+//                System.out.println("checkForAuthorization: response is null, check server status");
+//                return;
+//            }
+//            TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
+//            licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
+//
+//        }
+    }
+
+    public void updateJWT(){
+        String response = PipeHandler.updateJWT();
+        System.out.println("updateJWT: response: " + response);
+
+        if(response.contains("Login completed")){
+            System.out.println("JWT updated");
+        }else{
+            MessageHandler.showWarning("Возникла ошибка авторизации\nПопробуйте перезайти в аккаунт");
+            onProfileExitClicked();
         }
     }
 
@@ -274,7 +372,7 @@ public class MainWindowController {
             AnimationPageTransition.animatePageTransition(LoginPage, LoginPage, MainPage, MainPageBlocked, ProfilePage, LicensePage);
         }
 
-        setAllButtonsDark();
+        setAllButtonsWhite();
 
         profileText.setText("Здравствуйте, " + LOGIN);
 
@@ -282,7 +380,7 @@ public class MainWindowController {
         profileUpdatePane.setDisable(true);
         profileUpdateInfoButton.setText("Обновить профиль");
 
-        ProfileButton.setImage(new Image("/static/profile-white.png"));
+        ProfileButton.setImage(new Image("/static/profile-dark.png"));
     }
 
     public void onLoginButtonClicked(){
@@ -318,6 +416,12 @@ public class MainWindowController {
             setUniqueAvatar();
 
             onProfileButtonClicked();
+
+            // Check for license activation
+            startLicenseUpdateScheduler();
+            // checkForLicense();
+
+            return;
         }
 
     }
@@ -358,7 +462,7 @@ public class MainWindowController {
             LOGIN = login;
 
             setUniqueAvatar();
-
+            startLicenseUpdateScheduler();
             onProfileButtonClicked();
         }
 
@@ -378,8 +482,50 @@ public class MainWindowController {
         }
     }
 
+    public void onUpdateButtonClicked(){
+        String newLogin = profileNewLoginText.getText();
+        String newEmail = profileNewEmailText.getText();
+        String newPassword = profileNewPasswordText.getText();
+
+        String password = profileUpdatePasswordText.getText();
+        if(password.isEmpty()){
+            MessageHandler.showWarning("Введите текущий пароль для подтверждения");
+            return;
+        }
+
+        if(newLogin.isEmpty()){ newLogin = "null"; }
+        if(newEmail.isEmpty()){ newEmail = "null"; }
+        if(newPassword.isEmpty()){ newPassword = "null"; }
+
+        System.out.println("onUpdateButtonClicked: newLogin: " + newLogin + " newEmail: " + newEmail + " newPassword: " + newPassword);
+
+        // Validate for not allowed symbols
+        if(validateString(newLogin) || validateString(newPassword) || validateString(newEmail)){
+            MessageHandler.showWarning("Недопустимые символы!\nРазрешены только английские буквы\nи цифры,а также \"-\" и \"_\"");
+            return;
+        }
+
+        // Validate for length
+        if(newLogin.length() < 4 && !newLogin.equals("null") || newPassword.length() < 4 && !newPassword.equals("null")){
+            MessageHandler.showWarning("Слишком короткий логин или пароль!\nМинимальная длина - 4 символа");
+            return;
+        }
+
+        String response = PipeHandler.sendUpdateUserData(newLogin, newPassword, newEmail, password);
+
+        handleResponse(response);
+
+        if(response.contains("User updated")){
+            MessageHandler.showOk("Данные обновлены. Используйте новые данные для входа");
+
+            onProfileExitClicked();
+        }
+
+    }
+
     public void onProfileExitClicked(){
         clearTextFields();
+
         PipeHandler.clearAuthorization();
         IS_AUTHORIZED = false;
 
@@ -390,6 +536,7 @@ public class MainWindowController {
         TICKET = "";
         switchButtonsEnabled(false);
         onProfileButtonClicked();
+        onClose();
     }
 
     /// Home page Actions -------------------------------------------------------------------------
@@ -400,16 +547,16 @@ public class MainWindowController {
         }else{
             AnimationPageTransition.animatePageTransition(MainPageBlocked, LoginPage, MainPage, MainPageBlocked, ProfilePage, LicensePage);
         }
-        setAllButtonsDark();
-        HomeButton.setImage(new Image("/static/home-white.png"));
+        setAllButtonsWhite();
+        HomeButton.setImage(new Image("/static/home-dark.png"));
     }
 
     /// License page Actions ----------------------------------------------------------------------
 
     public void onLicenseButtonClicked(){
         AnimationPageTransition.animatePageTransition(LicensePage, LoginPage, MainPage, MainPageBlocked, ProfilePage, LicensePage);
-        setAllButtonsDark();
-        LicenseButton.setImage(new Image("/static/license-white.png"));
+        setAllButtonsWhite();
+        LicenseButton.setImage(new Image("/static/license-dark.png"));
 
     }
 
@@ -431,39 +578,52 @@ public class MainWindowController {
             TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
             licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
 
-            licenseActivateKeyText.setText(activationCode);
+            licenseActivateKeyText.setPromptText("Лицензия активирована");
             licenseActivatePane.setDisable(true);
         }
     }
 
-    public void onLicenseInfoClicked(){
-        String licenseCode = licenseActivateKeyText.getText();
+    public void onLicenseUpdateClicked(){
+        String activationCode = licenseUpdateKeyText.getText();
+        String login = licenseUpdateLoginText.getText();
+        String password = licenseUpdatePasswordText.getText();
 
-        if (licenseCode == null || licenseCode.isEmpty()) {
+
+//        String activationCode = licenseActivateKeyText.getText();
+
+        if (activationCode == null || activationCode.isEmpty()) {
             MessageHandler.showWarning("Не введен ключ");
             return;
         }
 
-        String response = PipeHandler.getActiveLicense(MAC_ADDRESS, licenseCode);
+        if (login == null || login.isEmpty()) {
+            MessageHandler.showWarning("Не введен логин");
+            return;
+        }
+
+        if (password == null || password.isEmpty()) {
+            MessageHandler.showWarning("Не введен пароль");
+            return;
+        }
+
+        String response = PipeHandler.updateLicense(login, password, activationCode, MAC_ADDRESS);
+
         handleResponse(response);
 
-        if (response != null && response.contains("Licenses found.")) {
+        if (response != null && response.contains("License update successful")) {
+            MessageHandler.showOk("Лицензия проделена");
             IS_HAVE_LICENSE = true;
             TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
             licenseText.setText("Текущая лицензия: " + ticketToText(TICKET));
-            System.out.println("onLicenseInfoClicked: ticket: " + TICKET);
-
-            licenseActivateKeyText.setText(licenseCode);
-            licenseActivatePane.setDisable(true);
         }
     }
 
     /// Other methods -----------------------------------------------------------------------------
 
-    public void setAllButtonsDark(){
-        HomeButton.setImage(new Image("/static/home-dark.png"));
-        LicenseButton.setImage(new Image("/static/license-dark.png"));
-        ProfileButton.setImage(new Image("/static/profile-dark.png"));
+    public void setAllButtonsWhite(){
+        HomeButton.setImage(new Image("/static/home-white.png"));
+        LicenseButton.setImage(new Image("/static/license-white.png"));
+        ProfileButton.setImage(new Image("/static/profile-white.png"));
     }
 
     public void switchButtonsEnabled(boolean enabled){
@@ -491,7 +651,7 @@ public class MainWindowController {
 
     public boolean validateString(String str){
         Pattern pattern = Pattern.compile("[" + Pattern.quote(
-                "!#$%^&*()\"'`{}<>/?," +
+                ":!#$%^&*()\"'`{}<>/?," +
                 "абвгдеёжзийклмнопрстуфхцчшщбыъэюя" +
                 "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ") + "]");
         return pattern.matcher(str).find();
@@ -505,6 +665,11 @@ public class MainWindowController {
         regPasswordFieldHidden.setText("");
         regPasswordFieldShow.setText("");
         regEmailField.setText("");
+
+        profileNewEmailText.setText("");
+        profileNewLoginText.setText("");
+        profileNewPasswordText.setText("");
+        profileUpdatePasswordText.setText("");
 
         licenseActivateKeyText.setText("");
         licenseText.setText("Текущая лицензия: \nОтсутствует");
@@ -553,14 +718,17 @@ public class MainWindowController {
         errorMessages.put("Validation error: User is not authenticated", "Попытка мошенничества!");
         errorMessages.put("Validation error: Device already registered by another user", "Устройство уже зарегистрировано другим пользователем");
         errorMessages.put("Validation error: License not found", "Лицензия не найдена");
-
         errorMessages.put("Validation error: License already activated", "Лицензия уже активирована");
-        errorMessages.put("License is blocked", "Лицензия заблокирована");
-        errorMessages.put("License is expired", "Лицензия истекла");
+        errorMessages.put("License for this device not found or blocked", "Лицензия заблокирована");
+        errorMessages.put("License is expired", "Срок действия лицензии истек, она была заблокирована");
         errorMessages.put("Device count exceeded", "Превышено количество устройств");
 
         //Info
         errorMessages.put("Validation error: Device not found", "Устроиство не найдено");
+
+        // Update user
+        errorMessages.put("Validation error: login already exists", "Пользователь с таким логином уже существует");
+        errorMessages.put("Validation error: email already exists", "Пользователь с таким email уже существует");
 
         for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
             if (response.contains(entry.getKey())) {
