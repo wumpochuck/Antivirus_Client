@@ -244,7 +244,7 @@ public class MainWindowController {
     private void updatingThread() {
         Platform.runLater(() -> {
             try {
-                System.out.println("Updating license information and jwt...");
+                System.out.println("Updating license information...");
                 checkForLicense();
                 sleep(100);
 //                updateJWT();
@@ -719,16 +719,16 @@ public class MainWindowController {
         errorMessages.put("User with this email already exists", "Пользователь с таким email уже существует");
 
         // Activation
-        errorMessages.put("Validation error: User is not authenticated", "Попытка мошенничества!");
-        errorMessages.put("Validation error: Device already registered by another user", "Устройство уже зарегистрировано другим пользователем");
-        errorMessages.put("Validation error: License not found", "Лицензия не найдена");
-        errorMessages.put("Validation error: License already activated", "Лицензия уже активирована");
+        errorMessages.put("User is not authenticated", "Попытка мошенничества!");
+        errorMessages.put("Device already registered by another user", "Устройство уже зарегистрировано другим пользователем");
+        errorMessages.put("License not found", "Лицензия не найдена");
+        errorMessages.put("License already activated", "Лицензия уже активирована");
         errorMessages.put("License for this device not found or blocked", "Лицензия заблокирована");
         errorMessages.put("License is expired", "Срок действия лицензии истек, она была заблокирована");
         errorMessages.put("Device count exceeded", "Превышено количество устройств");
 
         //Info
-        errorMessages.put("Validation error: Device not found", "Устроиство не найдено");
+        errorMessages.put("Device not found", "Устроиство не найдено");
 
         // Update user
         errorMessages.put("Validation error: login already exists", "Пользователь с таким логином уже существует");
