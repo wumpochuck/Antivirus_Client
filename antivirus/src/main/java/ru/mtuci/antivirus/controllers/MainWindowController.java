@@ -247,7 +247,7 @@ public class MainWindowController {
                 System.out.println("Updating license information and jwt...");
                 checkForLicense();
                 sleep(100);
-                updateJWT();
+//                updateJWT();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -351,17 +351,17 @@ public class MainWindowController {
 //        }
     }
 
-    public void updateJWT(){
-        String response = PipeHandler.updateJWT();
-        System.out.println("updateJWT: response: " + response);
-
-        if(response.contains("Login completed")){
-            System.out.println("JWT updated");
-        }else{
-            MessageHandler.showWarning("Возникла ошибка авторизации\nПопробуйте перезайти в аккаунт");
-            onProfileExitClicked();
-        }
-    }
+//    public void updateJWT(){
+//        String response = PipeHandler.updateJWT();
+//        System.out.println("updateJWT: response: " + response);
+//
+//        if(response.contains("Login completed")){
+//            System.out.println("JWT updated");
+//        }else{
+//            MessageHandler.showWarning("Возникла ошибка авторизации\nПопробуйте перезайти в аккаунт");
+//            onProfileExitClicked();
+//        }
+//    }
 
     /// Profile page Actions ----------------------------------------------------------------------
 
@@ -511,11 +511,14 @@ public class MainWindowController {
             return;
         }
 
+
         String response = PipeHandler.sendUpdateUserData(newLogin, newPassword, newEmail, password);
+
+        System.out.println("onUpdateButtonClicked: response: " + response);
 
         handleResponse(response);
 
-        if(response.contains("User updated")){
+        if(response.contains("Update completed")){
             MessageHandler.showOk("Данные обновлены. Используйте новые данные для входа");
 
             onProfileExitClicked();
@@ -705,14 +708,15 @@ public class MainWindowController {
         Map<String, String> errorMessages = new HashMap<>();
 
         // Login
-        errorMessages.put("Validation error: User with this login not found", "Пользователь не найден");
+        errorMessages.put("User not found", "Пользователь не найден");
         errorMessages.put("cannot be empty", "Заполните все поля правильно");
-        errorMessages.put("Validation error: Password is incorrect", "Неправильный пароль");
+        errorMessages.put("Incorrect password", "Неправильный пароль");
+        errorMessages.put("Multiple active sessions detected. All sessions blocked.","Обнаружено несколько сессий. Аккаунт заблокирован");
 
         // Registration
         errorMessages.put("should be valid", "Заполните все поля правильно");
-        errorMessages.put("Validation error: User with this login already exists","Пользователь с таким логином уже существует");
-        errorMessages.put("Validation error: User with this email already exists", "Пользователь с таким email уже существует");
+        errorMessages.put("User with this login already exists","Пользователь с таким логином уже существует");
+        errorMessages.put("User with this email already exists", "Пользователь с таким email уже существует");
 
         // Activation
         errorMessages.put("Validation error: User is not authenticated", "Попытка мошенничества!");
@@ -729,6 +733,8 @@ public class MainWindowController {
         // Update user
         errorMessages.put("Validation error: login already exists", "Пользователь с таким логином уже существует");
         errorMessages.put("Validation error: email already exists", "Пользователь с таким email уже существует");
+
+        errorMessages.put("Internal Server Error", "Ошибка сервера, попробуйте позже");
 
         for (Map.Entry<String, String> entry : errorMessages.entrySet()) {
             if (response.contains(entry.getKey())) {

@@ -54,9 +54,9 @@ public class PipeHandler {
         return sendData(data);
     }
 
-    public static String updateJWT(){
-        return sendData("jwtupdate:");
-    }
+//    public static String updateJWT(){
+//        return sendData("jwtupdate:");
+//    }
 
     public static String sendUpdateUserData(String newLogin, String newPassword, String newEmail, String password){
         String data = "update_user:" + password + ":" + newLogin + ":" + newPassword + ":" + newEmail;
@@ -64,7 +64,7 @@ public class PipeHandler {
     }
 
     public static String checkAuthorization(){
-        String response = sendData("jwtcheck:");
+        String response = sendData("jwt_check:");
         System.out.println("PipeHandler: checkAuthorization: response: " + response);
         if (response != null && !response.equals("false") && !response.isEmpty()) {
             return response;
@@ -73,7 +73,7 @@ public class PipeHandler {
     }
 
     public static void clearAuthorization(){
-        String response = sendData("jwtclear:");
+        String response = sendData("logout:");
         System.out.println("PipeHandler: clearAuthorization: response: " + response);
 
     }
