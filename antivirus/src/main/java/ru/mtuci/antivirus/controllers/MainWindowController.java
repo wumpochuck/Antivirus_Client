@@ -317,12 +317,13 @@ public class MainWindowController {
             licenseActivatePane.setDisable(false);
             licenseActivateKeyText.setPromptText("Введите код лицензии");
         }
-        else if(response.contains("License expired")){
+        else if(response.contains("expired")){
             IS_HAVE_LICENSE = false;
             licenseText.setText("Текущая лицензия: \nСрок действия лицензии истек, она была заблокирована");
             licenseActivatePane.setDisable(false);
 //            licenseActivateKeyText.setText("Лицензия активирована");
             licenseActivateKeyText.setPromptText("Введите код лицензии");
+            onLicenseButtonClicked();
         }
         else if(response.contains("Ticket{")){
             TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
@@ -613,7 +614,7 @@ public class MainWindowController {
 
         handleResponse(response);
 
-        if (response != null && response.contains("License update successful")) {
+        if (response != null && response.contains("Successful license update")) {
             MessageHandler.showOk("Лицензия проделена");
             IS_HAVE_LICENSE = true;
             TICKET = response.substring(response.indexOf("Ticket{") + 7, response.indexOf("}"));
@@ -724,8 +725,13 @@ public class MainWindowController {
         errorMessages.put("License not found", "Лицензия не найдена");
         errorMessages.put("License already activated", "Лицензия уже активирована");
         errorMessages.put("License for this device not found or blocked", "Лицензия заблокирована");
-        errorMessages.put("License is expired", "Срок действия лицензии истек, она была заблокирована");
         errorMessages.put("Device count exceeded", "Превышено количество устройств");
+        errorMessages.put("License is expired", "Срок действия лицензии истек, она была заблокирована");
+        errorMessages.put("license has expired", "Срок действия лицензии истек, она была заблокирована");
+
+        errorMessages.put("License is blocked", "Лицензия заблокирована");
+        errorMessages.put("License is not active", "Лицензия еще не активирована");
+        errorMessages.put("License cannot be renewed: more than 1 hour left before license expiration", "Лицензия не может быть продлена больше чем за час до окончания");
 
         //Info
         errorMessages.put("Device not found", "Устроиство не найдено");
