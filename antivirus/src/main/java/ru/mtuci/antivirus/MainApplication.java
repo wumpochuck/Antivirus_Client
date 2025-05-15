@@ -63,7 +63,7 @@ public class MainApplication extends Application {
         };
 
         PopupMenu popup = new PopupMenu();
-        MenuItem openItem = new MenuItem("Показать Antikripus");
+        MenuItem openItem = new MenuItem("Показать Antivirus");
         openItem.addActionListener(showListener);
         popup.add(openItem);
 
@@ -77,7 +77,7 @@ public class MainApplication extends Application {
         });
         popup.add(exitItem);
 
-        TrayIcon trayIcon = new TrayIcon(image, "Antikripus", popup);
+        TrayIcon trayIcon = new TrayIcon(image, "Antivirus", popup);
         trayIcon.setImageAutoSize(true);
         trayIcon.addActionListener(showListener);
 
