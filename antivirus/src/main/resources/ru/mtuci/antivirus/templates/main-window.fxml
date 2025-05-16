@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="MainWindow" maxHeight="700.0" maxWidth="1200.0" minHeight="700.0" minWidth="1200.0" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #172A3A;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.mtuci.antivirus.controllers.MainWindowController">
+<AnchorPane fx:id="MainWindow" maxHeight="700.0" maxWidth="1200.0" minHeight="700.0" minWidth="1200.0" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: #172A3A;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.mtuci.antivirus.controllers.MainWindowController">
    <children>
       <AnchorPane fx:id="ButtonsPane" layoutY="600.0" maxHeight="100.0" maxWidth="1200.0" minHeight="100.0" minWidth="1200.0" prefHeight="100.0" prefWidth="1200.0">
          <children>
@@ -218,20 +218,36 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="MainPage" prefHeight="600.0" prefWidth="1200.0" visible="false">
+      <AnchorPane fx:id="MainPage" prefHeight="600.0" prefWidth="1200.0">
          <children>
-            <Pane layoutX="350.0" layoutY="200.0" prefHeight="200.0" prefWidth="500.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
+            <Pane layoutX="400.0" layoutY="50.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;">
                <children>
-                  <Text fill="#172a3a" layoutX="77.0" layoutY="92.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Антивирус доступен&#10;Приятного пользования" textAlignment="CENTER">
+                  <Text fx:id="mainScanText" fill="#172a3a" layoutX="50.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Последнее сканирование:&#10;Не производилось. &#10;Выберите файл или папку&#10;">
                      <font>
-                        <Font name="System Bold" size="29.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
                </children>
             </Pane>
+            <Button fx:id="mainScanFile" layoutX="100.0" layoutY="50.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;" text="Выбрать файл" textFill="#172a3a">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="mainScanFolder" layoutX="100.0" layoutY="200.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;" text="Выбрать директорию" textFill="#172a3a">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="LicensePage" prefHeight="600.0" prefWidth="1200.0">
+      <AnchorPane fx:id="LicensePage" prefHeight="600.0" prefWidth="1200.0" visible="false">
          <children>
             <Text fx:id="licenseText" fill="WHITE" layoutX="100.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Текущая лицензия (Данные):&#10;Отсутствует&#10;">
                <font>

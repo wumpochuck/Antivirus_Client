@@ -2,6 +2,7 @@ package ru.mtuci.antivirus.controllers;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -12,12 +13,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import ru.mtuci.antivirus.MainApplication;
 import ru.mtuci.antivirus.animations.AnimationHover;
 import ru.mtuci.antivirus.animations.AnimationPageTransition;
 import ru.mtuci.antivirus.utils.MessageHandler;
 import ru.mtuci.antivirus.utils.PipeHandler;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.HashMap;
@@ -160,6 +165,15 @@ public class MainWindowController {
     private ToggleButton regShowPassword;
 
     @FXML
+    private Button mainScanFile;
+
+    @FXML
+    private Button mainScanFolder;
+
+    @FXML
+    private Text mainScanText;
+
+    @FXML
     void onHomeButtonEntered(MouseEvent event) {
         AnimationHover.startFadeTransition(HomeButtonBackground, HomeButtonBackground.getOpacity(), 0.7);
     }
@@ -226,7 +240,68 @@ public class MainWindowController {
         licenseActivateButton.setOnMouseClicked(event -> onLicenseActivateClicked());
         licenseUpdateButton.setOnMouseClicked(event -> onLicenseUpdateClicked());
 
+        mainScanFile.setOnMouseClicked(this::chooseFile);
+        mainScanFolder.setOnMouseClicked(this::chooseFolder);
+
     }
+
+    /// SCAN Methods
+
+    private void chooseFile(MouseEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выбор файла");
+
+        File file = fileChooser.showOpenDialog(
+                ((Stage)((Node)event.getSource()).getScene().getWindow())
+        );
+
+        if (file != null) {
+            System.out.println("Файл: " + file.getAbsolutePath());
+
+            /// Тут пайп
+            String response = PipeHandler.sendScanFile(file.getAbsolutePath());
+
+            mainScanText.setText(
+                    "Последнее сканирование:\n" +
+                    response
+            );
+
+        } else {
+            mainScanText.setText(
+                    "Последнее сканирование:\n" +
+                    "Не производилось. \n" +
+                    "Файл не выбран\n"
+            );
+        }
+    }
+
+    private void chooseFolder(MouseEvent event) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Выбор папки");
+
+        File folder = directoryChooser.showDialog(
+                ((Stage)((Node)event.getSource()).getScene().getWindow())
+        );
+
+        if (folder != null) {
+            System.out.println("Папка: " + folder.getAbsolutePath());
+
+            /// Тут пайп
+            String response = PipeHandler.sendScanFolder(folder.getAbsolutePath());
+
+            mainScanText.setText(
+                    "Последнее сканирование:\n" +
+                            response
+            );
+
+        } else {
+            mainScanText.setText("Последнее сканирование:\n" +
+                    "Не производилось. \n" +
+                    "Папка не выбрана\n");
+        }
+    }
+
+    /// SCAN Methods end
 
     /// Thread methods (For ticket, JWT)
 
@@ -234,7 +309,7 @@ public class MainWindowController {
         if (scheduler == null || scheduler.isShutdown()) { // Check if the scheduler is already running
             scheduler = Executors.newScheduledThreadPool(1); // Create a scheduler with a single thread
             System.out.println("Creating a scheduler with a single thread\n");
-            scheduler.scheduleAtFixedRate(this::updatingThread, 0, 1, TimeUnit.MINUTES); // Run every 1 minute (change to 60 mins later)
+            scheduler.scheduleAtFixedRate(this::updatingThread, 0, 60, TimeUnit.MINUTES); // Run every 1 minute (change to 60 mins later)
         } else {
             System.out.println("Scheduler is already running\n");
         }

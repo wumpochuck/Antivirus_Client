@@ -5,11 +5,13 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ru.mtuci.antivirus.utils.PipeHandler;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class MainApplication extends Application {
 
@@ -71,9 +73,21 @@ public class MainApplication extends Application {
 
         MenuItem exitItem = new MenuItem("Выход");
         exitItem.addActionListener(e -> {
-            tray.remove(tray.getTrayIcons()[0]);
-            Platform.exit();
-            System.exit(0);
+            String response = PipeHandler.sendExitRequest();
+            if(response.equals("true")) {
+                String response1 = PipeHandler.sendCloseServiceRequest();
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                // Вот тут почему то не хочет отправляться запрос службе на закрытие
+
+                tray.remove(tray.getTrayIcons()[0]);
+                Platform.exit();
+                System.exit(0);
+            }
         });
         popup.add(exitItem);
 

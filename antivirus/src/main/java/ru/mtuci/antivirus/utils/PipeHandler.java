@@ -77,4 +77,28 @@ public class PipeHandler {
         System.out.println("PipeHandler: clearAuthorization: response: " + response);
 
     }
+
+    public static String sendScanFile(String filepath){
+        String response = sendData("scan_file:" + filepath);
+        System.out.println("PipeHandler: sendScanFile: response: " + response);
+        return response;
+    }
+
+    public static String sendScanFolder(String folderpath){
+        String response = sendData("scan_folder:" + folderpath);
+        System.out.println("PipeHandler: sendScanFolder: response: " + response);
+        return response;
+    }
+
+    public static String sendExitRequest(){
+        String response = sendData("close_app:");
+        System.out.println("PipeHandler: sendExitRequest: response: " + response);
+        return response;
+    }
+
+    public static String sendCloseServiceRequest(){
+        String response = sendData("close_service:");
+        System.out.println("PipeHandler: sendCloseServiceRequest: response: " + response);
+        return response;
+    }
 }
