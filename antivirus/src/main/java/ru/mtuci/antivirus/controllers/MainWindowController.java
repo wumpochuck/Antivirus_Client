@@ -260,6 +260,7 @@ public class MainWindowController {
 
             /// Тут пайп
             String response = PipeHandler.sendScanFile(file.getAbsolutePath());
+            response = response.replace("[endl]", "\n");
 
             mainScanText.setText(
                     "Последнее сканирование:\n" +
@@ -288,6 +289,7 @@ public class MainWindowController {
 
             /// Тут пайп
             String response = PipeHandler.sendScanFolder(folder.getAbsolutePath());
+            response = response.replace("[endl]", "\n");
 
             mainScanText.setText(
                     "Последнее сканирование:\n" +
