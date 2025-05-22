@@ -63,6 +63,9 @@ public class MainWindowController {
     private AnchorPane MainPage;
 
     @FXML
+    private Button mainScanDisks;
+
+    @FXML
     private AnchorPane MainPageBlocked;
 
     @FXML
@@ -242,6 +245,7 @@ public class MainWindowController {
 
         mainScanFile.setOnMouseClicked(this::chooseFile);
         mainScanFolder.setOnMouseClicked(this::chooseFolder);
+        mainScanDisks.setOnMouseClicked(this::chooseDisks);
 
     }
 
@@ -291,6 +295,24 @@ public class MainWindowController {
             String response = PipeHandler.sendScanFolder(folder.getAbsolutePath());
             response = response.replace("[endl]", "\n");
 
+            mainScanText.setText(
+                    "Последнее сканирование:\n" +
+                            response
+            );
+
+        } else {
+            mainScanText.setText("Последнее сканирование:\n" +
+                    "Не производилось. \n" +
+                    "Папка не выбрана\n");
+        }
+    }
+
+    private void chooseDisks(MouseEvent event) {
+
+        String response = PipeHandler.sendScanDisks();
+        response = response.replace("[endl]", "\n");
+
+        if(response != null){
             mainScanText.setText(
                     "Последнее сканирование:\n" +
                             response

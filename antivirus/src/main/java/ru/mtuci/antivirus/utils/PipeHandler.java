@@ -90,6 +90,12 @@ public class PipeHandler {
         return response;
     }
 
+    public static String sendScanDisks(){
+        String response = sendData("scan_disks:");
+        System.out.println("PipeHandler: sendScanFolder: response: " + response);
+        return response;
+    }
+
     public static String sendExitRequest(){
         String response = sendData("close_app:");
         System.out.println("PipeHandler: sendExitRequest: response: " + response);
